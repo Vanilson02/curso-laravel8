@@ -11,20 +11,55 @@ class PostController extends Controller
     //
     public function index()
     {   
-        $posts = Post::get();
+        $posts = Post::paginate(1);
        
         return view('admin.posts.index',compact('posts'));
     }
 
     public function create()
     {
-        return view('admin/posts.create');
+        return view('admin.posts.create');
     }
 
     public function store(Request $request){
         
         $post = Post::create($request->all());
 
-        return redirect()->route('posts.index');
+        if(!$post)
+            return redirect()->route('posts.index')->with('message', "Erro ao cadastrar!");
+
+
+        return redirect()->route('posts.index')->with('message', "Cadastrado com suscesso!");
+    }
+
+    public function show($id)
+    {
+        if(!$post = Post::find($id))
+            return redirect()->route('posts.index');
+        
+
+        return view('admin.posts.show', compact('post'));
+    }
+
+    public function destroy($id)
+    {
+        if(!$post = Post::find($id))
+            return redirect()->route('posts.index');
+
+        $post->delete();
+        return redirect()->route('posts.index')->with('message', "Post Deletado com Sucesso!");
+
+    }
+
+    public function search(Request $request)
+    {   
+        $filters = $request->except('_token');
+
+        $posts = Post::where('title', 'LIKE', "%{$request->search}%")
+                    ->orWhere('content', 'LIKE', "%{$request->search}%")
+                    ->paginate(1);
+
+        return view('admin.posts.index' ,compact('posts','filters'));
+        
     }
 }
