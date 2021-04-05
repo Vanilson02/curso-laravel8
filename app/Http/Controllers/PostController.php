@@ -11,7 +11,7 @@ class PostController extends Controller
     //
     public function index()
     {   
-        $posts = Post::paginate(1);
+        $posts = Post::paginate(5);
        
         return view('admin.posts.index',compact('posts'));
     }
@@ -29,7 +29,7 @@ class PostController extends Controller
             return redirect()->route('posts.index')->with('message', "Erro ao cadastrar!");
 
 
-        return redirect()->route('posts.index')->with('message', "Cadastrado com suscesso!");
+        return redirect()->route('posts.index')->with('message', "Cadastrado com sucesso!");
     }
 
     public function show($id)
@@ -57,9 +57,30 @@ class PostController extends Controller
 
         $posts = Post::where('title', 'LIKE', "%{$request->search}%")
                     ->orWhere('content', 'LIKE', "%{$request->search}%")
-                    ->paginate(1);
+                    ->paginate(5);
 
         return view('admin.posts.index' ,compact('posts','filters'));
+        
+    }
+
+    public function edit($id)
+    {
+        if(!$post = Post::find($id))
+            return redirect()->route('posts.index');
+        
+
+        return view('admin.posts.edit', compact('post'));
+    }
+
+    public function update(Request $request, $id){
+
+        $post = Post::findOrFail($id);
+
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->save();
+            
+        return redirect()->route('posts.index')->with('message', "Alterado com sucessso!");
         
     }
 }
