@@ -7,7 +7,7 @@
     <h1>Cadastrar novo Post</h1>
 
 
-    <form action="<?php echo e(route('posts.store')); ?>" method="post">
+    <form action="<?php echo e(route('posts.store')); ?>" method="post" enctype="multipart/form-data">
         <?php echo $__env->make('admin.posts._partials.form', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     </form>
 <?php $__env->stopSection(); ?>

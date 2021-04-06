@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -23,7 +24,17 @@ class PostController extends Controller
 
     public function store(Request $request){
         
-        $post = Post::create($request->all());
+        $data = $request->all();
+
+        if($request->image->isValid()){
+
+            $nameFile = Str::of($request->title)->slug('-') . '.' .$request->image->getClientOriginalExtension();
+
+            $image = $request->image->storeAs('posts', $nameFile);
+            $data['image'] = $image;
+        }
+
+        $post = Post::create($data);
 
         if(!$post)
             return redirect()->route('posts.index')->with('message', "Erro ao cadastrar!");

@@ -18,7 +18,11 @@
     <h1>Posts</h1>
     <?php $__currentLoopData = $posts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $post): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <p>
+            
             <?php echo e($post->title); ?>
+
+            
+            <img src="<?php echo e(url("storage/{$post->image}")); ?>" alt="<?php echo e($post->title); ?>" style="max-width:100px;">
 
             [ <a href="<?php echo e(route('posts.show', $post->id )); ?>">Ver </a> ]
             [ <a href="<?php echo e(route('posts.edit', $post->id )); ?>">editar </a> ]
